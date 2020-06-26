@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+        </title>
+        <link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+        <link rel="stylesheet" href="my.css" />
+        <style>
+            /* App custom styles */
+        </style>
+        <script src="jquery-1.7.1.min.js"></script>
+        <script src="jquery.mobile-1.1.0.min.js"></script>
+        <script src="sha3.js"></script>
+        <script src="sha256.js"></script>
+        <script src="library.js"></script>
+		<script src="transcode.js"></script>
+        <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="page1">
+            <div data-theme="b" data-role="header">
+                <h3>
+                    SHA-3    E.Kutia
+                </h3>
+            </div>
+            <div data-theme="a" data-role="header">
+            </div>
+            <div data-role="content">
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
+                        <legend>
+                            Выберите кодировку:
+                        </legend>
+                        <input name="format" id="f1" value="utf-8" checked="CHECKED" type="radio" />
+                        <label for="f1">
+                            utf-8 / ascii
+                        </label>
+                        <input name="format" id="f2" value="utf-16le" type="radio" />
+                        <label for="f2">
+                            utf-16 little-endian
+                        </label>
+                        <input name="format" id="f3" value="utf-16be" type="radio" />
+                        <label for="f3">
+                            utf-16 big-endian
+                        </label>
+                        <input name="format" id="f4" value="hex" type="radio" />
+                        <label for="f4">
+                            hexadecimal
+                        </label>
+                        <input name="format" id="f5" value="base64" type="radio" />
+                        <label for="f5">
+                            base64
+                        </label>
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="vertical">
+                        <legend>
+                            Выберите хеш-функцию:
+                        </legend>
+                        <input name="hash" id="h1" value="blake32" checked="CHECKED" type="radio" />
+                        <label for="h1">
+                            BLAKE-256
+                        </label>
+                        <input name="hash" id="h2" value="keccak" type="radio" />
+                        <label for="h2">
+                            Keccak-256
+                        </label>
+                        <input name="hash" id="h3" value="halfskein" type="radio" />
+                        <label for="h3">
+                            Skein-256
+                        </label>
+                        <input name="hash" id="h4" value="sha256" type="radio" />
+                        <label for="h4">
+                            SHA-256
+                        </label>
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="selectmenu1">
+                        Кол-во итераций:
+                    </label>
+                    <select name="selectmenu1" id="iternumber" data-theme="b">
+                        <option value="1">
+                            1 раз
+                        </option>
+                        <option value="10">
+                            10 раз
+                        </option>
+                        <option value="100">
+                            100 раз
+                        </option>
+                        <option value="1000">
+                            1000 раз
+                        </option>
+                    </select>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="textarea1">
+                            Введите сообщение:
+                        </label>
+                        <textarea id="input" placeholder="">
+                        </textarea>
+                    </fieldset>
+                </div>
+                <input type="button" data-theme="b" value="Хеш" onclick="hash();"/>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="textarea2">
+                            Хеш-значение:
+                        </label>
+                        <textarea id="output" placeholder=""></textarea>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" charset="utf-8">
+            
+            function getChecked(name) {
+                var i, set = document.getElementsByName(name);
+                for (i = 0; i < set.length; i += 1) {
+                    if (set[i].checked) {
+                        return set[i].value;
+                    }
+                }
+                return null;
+            }
+            
+            function id(s) {
+                return document.getElementById(s);
+            }
+            function hash() {
+                try {
+                    var executionTime = 0;
+                    var iterNumber = Number(id('iternumber').value);
+                    var start = new Date().getMilliseconds();
+                    for (i = 0; i < iterNumber; i += 1) {
+                        if ('sha256' == getChecked('hash')) {
+                            id('output').value = SHA256(id('input').value);
+                        } else 
+                        {
+                            id('output').value = sha3_algos[getChecked('hash')](
+                                            d.o.transcode(id('input').value, getChecked('format'))
+                                                                                );
+                        }
+                    }
+                    var stop = new Date().getMilliseconds();
+                    executionTime = stop - start;
+                    var everageProcedureTime = executionTime/iterNumber;
+                    alert("Everage time of hash() execution is " + everageProcedureTime + " milliseconds, whole time for " + iterNumber + " hashes - " + executionTime + " milliseconds");
+                    
+                } catch (e) {
+                    alert(e.message);
+                }
+            }
+            </script>
+    </body>
+</html>
